@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "wgadmin"
+version = "0.1.0"
+description = ""
+authors = ["Fabian Köhler <fkoehler@physnet.uni-hamburg.de>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+jinja2 = "2.11.2"
+
+[tool.poetry.dev-dependencies]
+bandit = "1.6.2"
+flake8 = "3.8.3"
+isort = "<5"
+jedi = "0.17.2"
+mypy = "0.782"
+pylint = "2.5.3"
+pytest = "5.4.3"
+black = "^19.10b0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
