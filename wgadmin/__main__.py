@@ -59,35 +59,69 @@ def sanitize_port(value) -> int:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Create, manage and deploy WireGuard VPN", allow_abbrev=False,
+        description="Create, manage and deploy a WireGuard VPN", allow_abbrev=False,
     )
     subparsers = parser.add_subparsers(description="subcommand to run", required=True)
 
     parser_new_network = subparsers.add_parser(
-        "new-network", help="create a new, empty WireGuard VPN network"
+        "new-network", help="create a new, empty network"
     )
     parser_new_network.set_defaults(func=new_network)
     parser_new_network.add_argument("config", type=Path, help="path of the config file")
-    parser_new_network.add_argument("-f", "--force", action="store_true")
+    parser_new_network.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="whether to overwrite and existing config file",
+    )
 
     parser_list_peers = subparsers.add_parser(
-        "list-peers", help="list the peers in a WireGuard VPN network"
+        "list-peers", help="list the peers in a network"
     )
     parser_list_peers.add_argument("config", type=Path, help="path of the config file")
-    parser_list_peers.add_argument("-v", "--verbose", action="store_true")
+    parser_list_peers.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="whether to print detailed information about each peer",
+    )
     parser_list_peers.set_defaults(func=list_peers)
 
-    parser_add_peer = subparsers.add_parser(
-        "add-peer", help="add a peer to a WireGuard VPN network"
-    )
+    parser_add_peer = subparsers.add_parser("add-peer", help="add a peer to a network")
     parser_add_peer.add_argument("config", type=Path, help="path of the config file")
-    parser_add_peer.add_argument("name", type=str)
-    parser_add_peer.add_argument("--ipv4", type=str, default="")
-    parser_add_peer.add_argument("--ipv6", type=str, default="")
-    parser_add_peer.add_argument("--port", type=sanitize_port, default=51902)
-    parser_add_peer.add_argument("-e", "--endpoint-address", type=str, default="")
-    parser_add_peer.add_argument("-i", "--interface", type=str, default="wg0")
-    parser_add_peer.add_argument("-f", "--force", action="store_true")
+    parser_add_peer.add_argument("name", type=str, help="name for the peer")
+    parser_add_peer.add_argument(
+        "--ipv4", type=str, default="", help="IPv4 address of the peer inside the VPN"
+    )
+    parser_add_peer.add_argument(
+        "--ipv6", type=str, default="", help="IPv6 address of the peer inside the VPN"
+    )
+    parser_add_peer.add_argument(
+        "--port",
+        type=sanitize_port,
+        default=51902,
+        help="port for WireGuard to listen on",
+    )
+    parser_add_peer.add_argument(
+        "-e",
+        "--endpoint-address",
+        type=str,
+        default="",
+        help="make the peer an endpoint addressable under this address",
+    )
+    parser_add_peer.add_argument(
+        "-i",
+        "--interface",
+        type=str,
+        default="wg0",
+        help="name of the WireGuard network interface that will created",
+    )
+    parser_add_peer.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="whether to overwrite an existing peer",
+    )
     parser_add_peer.set_defaults(func=add_peer)
 
     parser_add_connection = subparsers.add_parser(
@@ -96,9 +130,18 @@ if __name__ == "__main__":
     parser_add_connection.add_argument(
         "config", type=Path, help="path of the config file"
     )
-    parser_add_connection.add_argument("peer_a", type=str)
-    parser_add_connection.add_argument("peer_b", type=str)
-    parser_add_connection.add_argument("-f", "--force", action="store_true")
+    parser_add_connection.add_argument(
+        "peer_a", type=str, help="one side of the connection"
+    )
+    parser_add_connection.add_argument(
+        "peer_b", type=str, help="other side of the connection"
+    )
+    parser_add_connection.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="whether to overwrite an existing connection",
+    )
     parser_add_connection.set_defaults(func=add_connection)
 
     args = parser.parse_args()
