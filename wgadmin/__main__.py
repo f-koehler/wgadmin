@@ -44,6 +44,12 @@ def add_peer(args: argparse.Namespace):
     net.to_json_file(args.config)
 
 
+def add_connection(args: argparse.Namespace):
+    net = Network.from_json_file(args.config)
+    net.peers[args.peer_a].add_connection(net.peers[args.peer_b])
+    net.to_json_file(args.config)
+
+
 def sanitize_port(value) -> int:
     port = int(value)
     if (port < 0) or (port > 65535):
@@ -83,6 +89,17 @@ if __name__ == "__main__":
     parser_add_peer.add_argument("-i", "--interface", type=str, default="wg0")
     parser_add_peer.add_argument("-f", "--force", action="store_true")
     parser_add_peer.set_defaults(func=add_peer)
+
+    parser_add_connection = subparsers.add_parser(
+        "add-connection", help="add a new connections between two peers"
+    )
+    parser_add_connection.add_argument(
+        "config", type=Path, help="path of the config file"
+    )
+    parser_add_connection.add_argument("peer_a", type=str)
+    parser_add_connection.add_argument("peer_b", type=str)
+    parser_add_connection.add_argument("-f", "--force", action="store_true")
+    parser_add_connection.set_defaults(func=add_connection)
 
     args = parser.parse_args()
 
