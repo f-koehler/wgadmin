@@ -127,7 +127,7 @@ class Network:
 
         for connection_entry in decoded["connections"]:
             net.peers[connection_entry["peer_a"]].add_connection(
-                connection_entry["peer_b"], connection_entry["psk"]
+                net.peers[connection_entry["peer_b"]], connection_entry["psk"]
             )
 
         return net
