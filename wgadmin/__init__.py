@@ -2,8 +2,9 @@
 from __future__ import annotations
 import subprocess
 import json
-from typing import Tuple, Union, Any, List, Optional, Dict
+from typing import Tuple, Union, Any, List, Optional, Dict, Set
 from pathlib import Path
+from ipaddress import IPv4Address, IPv6Address, IPv4Network, IPv6Network
 
 __version__ = "0.1.0"
 
@@ -85,12 +86,60 @@ class Connection:
 
 
 class Network:
-    def __init__(self):
+    def __init__(
+        self,
+        ipv4: bool = True,
+        ipv6: bool = True,
+        ipv4_range: str = "10.0.0.0/24",
+        ipv6_range: str = "fdc9:281f:4d7:9ee9::/64",
+    ):
         self.peers: Dict[str, Peer] = {}
+        self.ipv4: bool = ipv4
+        self.ipv6: bool = ipv6
+        self.ipv4_range: str = ipv4_range
+        self.ipv6_range: str = ipv6_range
+
+    def get_used_ipv4_addresses(self) -> Set[IPv4Address]:
+        addresses: Set[IPv4Address] = set()
+        for name in self.peers:
+            if self.peers[name].address_ipv4:
+                addresses.add(IPv4Address(self.peers[name].address_ipv4))
+        return addresses
+
+    def get_used_ipv6_addresses(self) -> Set[IPv6Address]:
+        addresses: Set[IPv6Address] = set()
+        for name in self.peers:
+            if self.peers[name].address_ipv6:
+                addresses.add(IPv6Address(self.peers[name].address_ipv6))
+        return addresses
+
+    def get_next_ipv4_address(self) -> IPv4Address:
+        addresses = self.get_used_ipv4_addresses()
+        for address in IPv4Network(self.ipv4_range).hosts():
+            if address in addresses:
+                continue
+            return address
+
+        raise RuntimeError("No more IPv4 addresses available")
+
+    def get_next_ipv6_address(self) -> IPv6Address:
+        addresses = self.get_used_ipv6_addresses()
+        for address in IPv6Network(self.ipv6_range).hosts():
+            if address in addresses:
+                continue
+            return address
+
+        raise RuntimeError("No more IPv6 addresses available")
 
     def to_json(self) -> str:
         peer_dict: Dict[str, Dict[str, str]] = {}
         connection_list: List[Dict[str, str]] = []
+        settings = {
+            "ipv4": self.ipv4,
+            "ipv6": self.ipv6,
+            "ipv4_range": self.ipv4_range,
+            "ipv6_range": self.ipv6_range,
+        }
 
         for peer_name in self.peers:
             peer = self.peers[peer_name]
@@ -115,20 +164,30 @@ class Network:
                     }
                 )
 
-        return json.dumps({"peers": peer_dict, "connections": connection_list})
+        return json.dumps(
+            {"settings": settings, "peers": peer_dict, "connections": connection_list}
+        )
 
     def to_json_file(self, path: Union[str, Path]):
         with open(path, "w") as fptr:
             fptr.write(self.to_json())
 
         if Path("/usr/bin/prettier").exists():
-            subprocess.run(["prettier", "--parser", "json", "--write", str(path)])
+            subprocess.run(
+                ["/usr/bin/prettier", "--parser", "json", "--write", str(path)]
+            )
 
     @staticmethod
     def from_json(config: str) -> Network:
-        net = Network()
-
         decoded = json.loads(config)
+
+        settings = decoded["settings"]
+        net = Network(
+            ipv4=settings["ipv4"],
+            ipv6=settings["ipv6"],
+            ipv4_range=settings["ipv4_range"],
+            ipv6_range=settings["ipv6_range"],
+        )
 
         for peer_name in decoded["peers"]:
             peer_entry = decoded["peers"][peer_name]

@@ -13,7 +13,12 @@ def new_network(args: argparse.Namespace):
                 )
             )
 
-    net = Network()
+    net = Network(
+        ipv4=args.ipv4,
+        ipv6=args.ipv6,
+        ipv4_range=args.ipv4_range,
+        ipv6_range=args.ipv6_range,
+    )
     net.to_json_file(args.config)
 
 
@@ -33,11 +38,18 @@ def add_peer(args: argparse.Namespace):
         raise RuntimeError(
             'peer "{}" already present, add -f flag to overwrite'.format(args.name)
         )
+
+    ipv4 = args.ipv4
+    if (not ipv4) and net.ipv4:
+        ipv4 = str(net.get_next_ipv4_address())
+    ipv6 = args.ipv6
+    if (not ipv6) and net.ipv6:
+        ipv6 = str(net.get_next_ipv6_address())
     net.peers[args.name] = Peer(
         name=args.name,
         interface=args.interface,
-        ipv4=args.ipv4,
-        ipv6=args.ipv6,
+        ipv4=ipv4,
+        ipv6=ipv6,
         port=args.port,
         endpoint_address=args.endpoint_address,
     )
@@ -73,6 +85,44 @@ if __name__ == "__main__":
         "--force",
         action="store_true",
         help="whether to overwrite and existing config file",
+    )
+    parser_new_network.add_argument(
+        "--ipv4",
+        action="store_true",
+        dest="ipv4",
+        default=True,
+        help="automatically assign IPv4 addresses",
+    )
+    parser_new_network.add_argument(
+        "--no-ipv4",
+        action="store_false",
+        dest="ipv4",
+        help="do not automatically assign IPv4 addresses",
+    )
+    parser_new_network.add_argument(
+        "--ipv4-range",
+        type=str,
+        default="10.0.0.0/24",
+        help="IPv4 address range to use",
+    )
+    parser_new_network.add_argument(
+        "--ipv6",
+        action="store_true",
+        dest="ipv6",
+        default=True,
+        help="automatically assign IPv6 addresses",
+    )
+    parser_new_network.add_argument(
+        "--no-ipv6",
+        action="store_false",
+        dest="ipv6",
+        help="do not automatically assign IPv6 addresses",
+    )
+    parser_new_network.add_argument(
+        "--ipv6-range",
+        type=str,
+        default="fdc9:281f:4d7:9ee9::/64",
+        help="IPv6 address range to use",
     )
 
     parser_list_peers = subparsers.add_parser(
