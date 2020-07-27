@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+import jinja2
 
 from wgadmin.peer import Peer
 from wgadmin.network import Network
@@ -61,6 +62,17 @@ def add_connection(args: argparse.Namespace):
     net = Network.from_json_file(args.config)
     net.peers[args.peer_a].add_connection(net.peers[args.peer_b])
     net.to_json_file(args.config)
+
+
+def generate_config(args: argparse.Namespace):
+    net = Network.from_json_file(args.config)
+    env = jinja2.Environment(
+        loader=jinja2.PackageLoader("wgadmin", "templates"), autoescape=True
+    )
+    template = env.get_template("nmconnection")
+    for name in net.peers:
+        with open(name + ".nmconnection", "w") as fptr:
+            fptr.write(template.render(peer=net.peers[name]))
 
 
 def sanitize_port(value) -> int:
@@ -194,6 +206,14 @@ if __name__ == "__main__":
         help="whether to overwrite an existing connection",
     )
     parser_add_connection.set_defaults(func=add_connection)
+
+    parser_generate_config = subparsers.add_parser(
+        "generate-config", help="generate peer configuration files"
+    )
+    parser_generate_config.add_argument(
+        "config", type=Path, help="path of the config file"
+    )
+    parser_generate_config.set_defaults(func=generate_config)
 
     args = parser.parse_args()
 
