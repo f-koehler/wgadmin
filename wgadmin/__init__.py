@@ -41,13 +41,16 @@ class Peer:
         interface: str = "wg0",
         ipv4: str = "",
         ipv6: str = "",
+        port: int = 51902,
         private_key: Optional[str] = None,
         public_key: Optional[str] = None,
+        endpoint_address: str = "",
     ):
         self.name = name
         self.interface = interface
         self.address_ipv4 = ipv4
         self.address_ipv6 = ipv6
+        self.port = port
 
         if private_key:
             self.private_key = private_key
@@ -58,6 +61,8 @@ class Peer:
             self.public_key = public_key
         else:
             self.public_key = generate_public_key(self.private_key)
+
+        self.endpoint_address = endpoint_address
 
         self.connections: List[Connection] = []
 
@@ -94,8 +99,10 @@ class Network:
                 "interface": peer.interface,
                 "ipv4": peer.address_ipv4,
                 "ipv6": peer.address_ipv6,
+                "port": str(peer.port),
                 "private_key": peer.private_key,
                 "public_key": peer.public_key,
+                "endpoint_address": peer.endpoint_address,
             }
             for connection in peer.connections:
                 if connection.peer_a.name > connection.peer_b.name:
@@ -127,8 +134,10 @@ class Network:
                 interface=peer_entry["interface"],
                 ipv4=peer_entry["ipv4"],
                 ipv6=peer_entry["ipv6"],
+                port=int(peer_entry["port"]),
                 private_key=peer_entry["private_key"],
                 public_key=peer_entry["public_key"],
+                endpoint_address=peer_entry["endpoint_address"],
             )
 
         for connection_entry in decoded["connections"]:
