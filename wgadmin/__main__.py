@@ -1,7 +1,8 @@
 import argparse
 from pathlib import Path
 
-from wgadmin import Network, Peer
+from wgadmin.peer import Peer
+from wgadmin.network import Network
 
 
 def new_network(args: argparse.Namespace):
