@@ -23,7 +23,7 @@ method=manual
 
 {%- for connection in peer.connections -%}
 [wireguard-peer.{{ connection.peer_b.public_key }}]
-{%- if endpoint -%}
+{%- if connection.peer_b.endpoint_address -%}
 endpoint={{ connection.peer_b.endpoint_address }}
 {%- endif -%}
 preshared-key={{ connection.psk }}
