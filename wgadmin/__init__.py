@@ -121,6 +121,9 @@ class Network:
         with open(path, "w") as fptr:
             fptr.write(self.to_json())
 
+        if Path("/usr/bin/prettier").exists():
+            subprocess.run(["prettier", "--parser", "json", "--write", str(path)])
+
     @staticmethod
     def from_json(config: str) -> Network:
         net = Network()
