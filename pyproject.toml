@@ -7,6 +7,7 @@ authors = ["Fabian Köhler <fkoehler@physnet.uni-hamburg.de>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 jinja2 = "2.11.2"
+argcomplete = "^1.12.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "1.6.2"
@@ -17,6 +18,9 @@ mypy = "0.782"
 pylint = "2.5.3"
 pytest = "5.4.3"
 black = "^19.10b0"
+
+[tool.poetry.scripts]
+wgadmin = "wgadmin.main:main"
 
 [build-system]
 requires = ["poetry>=0.12"]
