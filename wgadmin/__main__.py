@@ -69,7 +69,7 @@ def generate_config(args: argparse.Namespace):
     env = jinja2.Environment(
         loader=jinja2.PackageLoader("wgadmin", "templates"), autoescape=True
     )
-    template = env.get_template("nmconnection")
+    template = env.get_template("nm-connection")
     for name in net.peers:
         with open(name + ".nmconnection", "w") as fptr:
             fptr.write(template.render(peer=net.peers[name]))

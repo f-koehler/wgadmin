@@ -1,0 +1,15 @@
+# vim: set ft=dosini:
+[Interface]
+Address = {% if peer.address_ipv4 %}{{ peer.address_ipv4 }}{% if peer.address_ipv6 %}, {% endif %}{% endif %}{%if peer.address_ipv6 %}{{ peer.address_ipv6 }}{% endif %}
+ListenPort = {{ peer.port }}
+PrivateKey = {{ peer.private_key }}
+
+{%- for connection in peer.connections %}
+[Peer]
+PublicKey = {{ connection.peer_b.public_key }}
+PresharedKey = {{ connection.psk }}
+AllowedIPs = {% if connection.peer_b.address_ipv4 %}{{ connection.peer_b.address_ipv4 }}{% if connection.peer_b.address_ipv6 %}, {% endif %}{% endif %}{%if connection.peer_b.address_ipv6 %}{{ connection.peer_b.address_ipv6 }}{% endif %}
+{%- if connection.peer_b.endpoint_address %}
+Endpoint={{ connection.peer_b.endpoint_address }}
+{%- endif %}
+{% endfor %}
