@@ -92,7 +92,13 @@ if __name__ == "__main__":
         "new-network", help="create a new, empty network"
     )
     parser_new_network.set_defaults(func=new_network)
-    parser_new_network.add_argument("config", type=Path, help="path of the config file")
+    parser_new_network.add_argument(
+        "-c",
+        "--config",
+        type=Path,
+        default=Path("wg.json"),
+        help="path of the config file",
+    )
     parser_new_network.add_argument(
         "-f",
         "--force",
@@ -141,7 +147,13 @@ if __name__ == "__main__":
     parser_list_peers = subparsers.add_parser(
         "list-peers", help="list the peers in a network"
     )
-    parser_list_peers.add_argument("config", type=Path, help="path of the config file")
+    parser_list_peers.add_argument(
+        "-c",
+        "--config",
+        type=Path,
+        default=Path("wg.json"),
+        help="path of the config file",
+    )
     parser_list_peers.add_argument(
         "-v",
         "--verbose",
@@ -151,7 +163,13 @@ if __name__ == "__main__":
     parser_list_peers.set_defaults(func=list_peers)
 
     parser_add_peer = subparsers.add_parser("add-peer", help="add a peer to a network")
-    parser_add_peer.add_argument("config", type=Path, help="path of the config file")
+    parser_add_peer.add_argument(
+        "-c",
+        "--config",
+        type=Path,
+        default=Path("wg.json"),
+        help="path of the config file",
+    )
     parser_add_peer.add_argument("name", type=str, help="name for the peer")
     parser_add_peer.add_argument(
         "--ipv4", type=str, default="", help="IPv4 address of the peer inside the VPN"
@@ -191,7 +209,11 @@ if __name__ == "__main__":
         "add-connection", help="add a new connections between two peers"
     )
     parser_add_connection.add_argument(
-        "config", type=Path, help="path of the config file"
+        "-c",
+        "--config",
+        type=Path,
+        default=Path("wg.json"),
+        help="path of the config file",
     )
     parser_add_connection.add_argument(
         "peer_a", type=str, help="one side of the connection"
