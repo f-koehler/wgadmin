@@ -76,6 +76,10 @@ def generate_config(args: argparse.Namespace):
     for name in net.peers:
         with open(name + ".nmconnection", "w") as fptr:
             fptr.write(template.render(peer=net.peers[name]))
+    template = env.get_template("wg-quick")
+    for name in net.peers:
+        with open(name + ".conf", "w") as fptr:
+            fptr.write(template.render(peer=net.peers[name]))
 
 
 def sanitize_port(value) -> int:
@@ -225,7 +229,13 @@ parser_add_connection.set_defaults(func=add_connection)
 parser_generate_config = subparsers.add_parser(
     "generate-config", help="generate peer configuration files"
 )
-parser_generate_config.add_argument("config", type=Path, help="path of the config file")
+parser_generate_config.add_argument(
+    "-c",
+    "--config",
+    type=Path,
+    default=Path("wg.json"),
+    help="path of the config file",
+)
 parser_generate_config.set_defaults(func=generate_config)
 
 argcomplete.autocomplete(parser)
