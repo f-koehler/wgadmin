@@ -72,13 +72,19 @@ def generate_config(args: argparse.Namespace):
     env = jinja2.Environment(
         loader=jinja2.PackageLoader("wgadmin", "templates"), autoescape=True
     )
+
     template = env.get_template("nm-connection")
+    directory = Path(args.config).with_suffix("") / "network-manager"
+    directory.mkdir(exist_ok=True, parents=True)
     for name in net.peers:
-        with open(name + ".nmconnection", "w") as fptr:
+        with open((directory / name).with_suffix(".nmconnection"), "w") as fptr:
             fptr.write(template.render(peer=net.peers[name]))
+
     template = env.get_template("wg-quick")
+    directory = Path(args.config).with_suffix("") / "wg-quick"
+    directory.mkdir(exist_ok=True, parents=True)
     for name in net.peers:
-        with open(name + ".conf", "w") as fptr:
+        with open((directory / name).with_suffix(".conf"), "w") as fptr:
             fptr.write(template.render(peer=net.peers[name]))
 
 
