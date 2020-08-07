@@ -73,18 +73,17 @@ def generate_config(args: argparse.Namespace):
         loader=jinja2.PackageLoader("wgadmin", "templates"), autoescape=True
     )
 
-    template = env.get_template("nm-connection")
-    directory = Path(args.config).with_suffix("") / "network-manager"
-    directory.mkdir(exist_ok=True, parents=True)
+    config_name = Path(args.config).stem
     for name in net.peers:
-        with open((directory / name).with_suffix(".nmconnection"), "w") as fptr:
+        directory = Path(config_name) / name
+
+        template = env.get_template("nm-connection")
+        directory.mkdir(exist_ok=True, parents=True)
+        with open((directory / config_name).with_suffix(".nmconnection"), "w") as fptr:
             fptr.write(template.render(peer=net.peers[name]))
 
-    template = env.get_template("wg-quick")
-    directory = Path(args.config).with_suffix("") / "wg-quick"
-    directory.mkdir(exist_ok=True, parents=True)
-    for name in net.peers:
-        with open((directory / name).with_suffix(".conf"), "w") as fptr:
+        template = env.get_template("wg-quick")
+        with open((directory / config_name).with_suffix(".conf"), "w") as fptr:
             fptr.write(template.render(peer=net.peers[name]))
 
 
@@ -108,7 +107,7 @@ parser_new_network.add_argument(
     "-c",
     "--config",
     type=Path,
-    default=Path("wg.json"),
+    default=Path("wg0.json"),
     help="path of the config file",
 )
 parser_new_network.add_argument(
@@ -160,7 +159,7 @@ parser_list_peers.add_argument(
     "-c",
     "--config",
     type=Path,
-    default=Path("wg.json"),
+    default=Path("wg0.json"),
     help="path of the config file",
 )
 parser_list_peers.add_argument(
@@ -176,7 +175,7 @@ parser_add_peer.add_argument(
     "-c",
     "--config",
     type=Path,
-    default=Path("wg.json"),
+    default=Path("wg0.json"),
     help="path of the config file",
 )
 parser_add_peer.add_argument("name", type=str, help="name for the peer")
@@ -215,7 +214,7 @@ parser_add_connection.add_argument(
     "-c",
     "--config",
     type=Path,
-    default=Path("wg.json"),
+    default=Path("wg0.json"),
     help="path of the config file",
 )
 parser_add_connection.add_argument(
@@ -239,7 +238,7 @@ parser_generate_config.add_argument(
     "-c",
     "--config",
     type=Path,
-    default=Path("wg.json"),
+    default=Path("wg0.json"),
     help="path of the config file",
 )
 parser_generate_config.set_defaults(func=generate_config)
