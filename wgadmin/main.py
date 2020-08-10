@@ -8,6 +8,7 @@ from wgadmin.subcommands import (
     add_peer,
     add_connection,
     generate_all_configs,
+    generate_config,
 )
 
 
@@ -20,6 +21,7 @@ new_network.create_parser(subparsers)
 list_peers.create_parser(subparsers)
 add_peer.create_parser(subparsers)
 add_connection.create_parser(subparsers)
+generate_config.create_parser(subparsers)
 generate_all_configs.create_parser(subparsers)
 
 
