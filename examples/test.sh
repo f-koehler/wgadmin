@@ -8,4 +8,4 @@ python -m wgadmin add-peer workstation
 python -m wgadmin add-connection laptop server
 python -m wgadmin add-connection workstation server
 python -m wgadmin list-peers
-python -m wgadmin generate-config
+python -m wgadmin generate-all-configs
