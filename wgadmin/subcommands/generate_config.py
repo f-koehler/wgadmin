@@ -21,7 +21,7 @@ from wgadmin.network import Network
 
 
 def generate_config(args: argparse.Namespace):
-    net = Network.from_json_file(args.config)
+    net = Network.from_file(args.config)
     env = jinja2.Environment(
         loader=jinja2.PackageLoader("wgadmin", "templates"), autoescape=True
     )
@@ -46,7 +46,7 @@ def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPa
         "-c",
         "--config",
         type=Path,
-        default=Path("wg0.json"),
+        default=Path("wg0.yml"),
         help="path of the config file",
     )
     parser.add_argument("-o", "--output", type=Path, help="name of the output file")

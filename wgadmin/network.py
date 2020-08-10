@@ -17,8 +17,8 @@ from __future__ import annotations
 from typing import Dict, Set, List, Union
 from ipaddress import IPv4Address, IPv4Network, IPv6Address, IPv6Network
 from pathlib import Path
-import subprocess
 import json
+import yaml
 
 from wgadmin.peer import Peer
 
@@ -106,14 +106,56 @@ class Network:
             {"settings": settings, "peers": peer_dict, "connections": connection_list}
         )
 
+    def to_yaml(self) -> str:
+        peer_dict: Dict[str, Dict[str, str]] = {}
+        connection_list: List[Dict[str, str]] = []
+        settings = {
+            "ipv4": self.ipv4,
+            "ipv6": self.ipv6,
+            "ipv4_range": self.ipv4_range,
+            "ipv6_range": self.ipv6_range,
+        }
+
+        for peer_name in self.peers:
+            peer = self.peers[peer_name]
+            peer_dict[peer.name] = {
+                "name": peer.name,
+                "interface": peer.interface,
+                "ipv4": peer.address_ipv4,
+                "ipv6": peer.address_ipv6,
+                "port": str(peer.port),
+                "private_key": peer.private_key,
+                "public_key": peer.public_key,
+                "endpoint_address": peer.endpoint_address,
+            }
+            for connection in peer.connections:
+                if connection.peer_a.name > connection.peer_b.name:
+                    continue
+                connection_list.append(
+                    {
+                        "peer_a": connection.peer_a.name,
+                        "peer_b": connection.peer_b.name,
+                        "psk": connection.psk,
+                    }
+                )
+
+        return yaml.dump(
+            {"settings": settings, "peers": peer_dict, "connections": connection_list}
+        )
+
     def to_json_file(self, path: Union[str, Path]):
         with open(path, "w") as fptr:
             fptr.write(self.to_json())
 
-        if Path("/usr/bin/prettier").exists():
-            subprocess.run(
-                ["/usr/bin/prettier", "--parser", "json", "--write", str(path)]
-            )
+    def to_yaml_file(self, path: Union[str, Path]):
+        with open(path, "w") as fptr:
+            fptr.write(self.to_yaml())
+
+    def to_file(self, path: Union[str, Path]):
+        if Path(path).suffix == ".json":
+            self.to_json_file(path)
+        else:
+            self.to_yaml_file(path)
 
     @staticmethod
     def from_json(config: str) -> Network:
@@ -148,6 +190,49 @@ class Network:
         return net
 
     @staticmethod
+    def from_yaml(config: str) -> Network:
+        decoded = yaml.safe_load(config)
+
+        settings = decoded["settings"]
+        net = Network(
+            ipv4=settings["ipv4"],
+            ipv6=settings["ipv6"],
+            ipv4_range=settings["ipv4_range"],
+            ipv6_range=settings["ipv6_range"],
+        )
+
+        for peer_name in decoded["peers"]:
+            peer_entry = decoded["peers"][peer_name]
+            net.peers[peer_name] = Peer(
+                name=peer_name,
+                interface=peer_entry["interface"],
+                ipv4=peer_entry["ipv4"],
+                ipv6=peer_entry["ipv6"],
+                port=int(peer_entry["port"]),
+                private_key=peer_entry["private_key"],
+                public_key=peer_entry["public_key"],
+                endpoint_address=peer_entry["endpoint_address"],
+            )
+
+        for connection_entry in decoded["connections"]:
+            net.peers[connection_entry["peer_a"]].add_connection(
+                net.peers[connection_entry["peer_b"]], connection_entry["psk"]
+            )
+
+        return net
+
+    @staticmethod
     def from_json_file(path: Union[Path, str]) -> Network:
         with open(path, "r") as fptr:
             return Network.from_json(fptr.read())
+
+    @staticmethod
+    def from_yaml_file(path: Union[Path, str]) -> Network:
+        with open(path, "r") as fptr:
+            return Network.from_yaml(fptr.read())
+
+    @staticmethod
+    def from_file(path: Union[Path, str]) -> Network:
+        if Path(path).suffix == ".json":
+            return Network.from_json_file(path)
+        return Network.from_yaml_file(path)

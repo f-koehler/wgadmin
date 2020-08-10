@@ -34,7 +34,7 @@ def new_network(args: argparse.Namespace):
         ipv4_range=args.ipv4_range,
         ipv6_range=args.ipv6_range,
     )
-    net.to_json_file(args.config)
+    net.to_file(args.config)
 
 
 def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentParser:
@@ -44,7 +44,7 @@ def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPa
         "-c",
         "--config",
         type=Path,
-        default=Path("wg0.json"),
+        default=Path("wg0.yml"),
         help="path of the config file",
     )
     parser.add_argument(

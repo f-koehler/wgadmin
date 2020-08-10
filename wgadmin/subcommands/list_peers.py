@@ -20,7 +20,7 @@ from wgadmin.network import Network
 
 
 def list_peers(args: argparse.Namespace):
-    net = Network.from_json_file(args.config)
+    net = Network.from_file(args.config)
     if not args.verbose:
         for peer_name in net.peers:
             print(peer_name)
@@ -35,7 +35,7 @@ def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPa
         "-c",
         "--config",
         type=Path,
-        default=Path("wg0.json"),
+        default=Path("wg0.yml"),
         help="path of the config file",
     )
     parser.add_argument(

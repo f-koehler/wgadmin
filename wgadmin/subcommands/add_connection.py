@@ -20,9 +20,9 @@ from wgadmin.network import Network
 
 
 def add_connection(args: argparse.Namespace):
-    net = Network.from_json_file(args.config)
+    net = Network.from_file(args.config)
     net.peers[args.peer_a].add_connection(net.peers[args.peer_b])
-    net.to_json_file(args.config)
+    net.to_file(args.config)
 
 
 def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentParser:
@@ -33,7 +33,7 @@ def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPa
         "-c",
         "--config",
         type=Path,
-        default=Path("wg0.json"),
+        default=Path("wg0.yml"),
         help="path of the config file",
     )
     parser.add_argument("peer_a", type=str, help="one side of the connection")

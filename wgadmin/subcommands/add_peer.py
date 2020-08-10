@@ -29,7 +29,8 @@ def sanitize_port(value: Union[str, int]) -> int:
 
 
 def add_peer(args: argparse.Namespace):
-    net = Network.from_json_file(args.config)
+    net = Network.from_file(args.config)
+
     if (args.name in net.peers) and not args.force:
         raise RuntimeError(
             'peer "{}" already present, add -f flag to overwrite'.format(args.name)
@@ -49,7 +50,8 @@ def add_peer(args: argparse.Namespace):
         port=args.port,
         endpoint_address=args.endpoint_address,
     )
-    net.to_json_file(args.config)
+
+    net.to_file(args.config)
 
 
 def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentParser:
@@ -58,7 +60,7 @@ def create_parser(subparsers: argparse._SubParsersAction) -> argparse.ArgumentPa
         "-c",
         "--config",
         type=Path,
-        default=Path("wg0.json"),
+        default=Path("wg0.yml"),
         help="path of the config file",
     )
     parser.add_argument("name", type=str, help="name for the peer")

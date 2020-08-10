@@ -2,7 +2,7 @@
 set -euf -o pipefail
 
 python -m wgadmin new-network --force
-python -m wgadmin add-peer server --endpoint fkoehler.xyz
+python -m wgadmin add-peer server --endpoint test.org
 python -m wgadmin add-peer laptop
 python -m wgadmin add-peer workstation
 python -m wgadmin add-connection laptop server
