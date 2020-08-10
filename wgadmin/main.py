@@ -1,10 +1,7 @@
 # PYTHON_ARGCOMPLETE_OK
 import argparse
-from pathlib import Path
-import jinja2
 import argcomplete
 
-from wgadmin.network import Network
 from wgadmin.subcommands import (
     new_network,
     list_peers,
