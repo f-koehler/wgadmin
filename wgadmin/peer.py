@@ -14,7 +14,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import annotations
-from typing import Optional, List
+
+from typing import List, Optional
 
 from wgadmin import util
 from wgadmin.connection import Connection

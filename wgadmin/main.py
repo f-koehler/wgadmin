@@ -15,17 +15,17 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import argparse
+
 import argcomplete
 
 from wgadmin.subcommands import (
-    new_network,
-    list_peers,
-    add_peer,
     add_connection,
+    add_peer,
     generate_all_configs,
     generate_config,
+    list_peers,
+    new_network,
 )
-
 
 parser = argparse.ArgumentParser(
     description="Create and manage WireGuard VPNs", allow_abbrev=False,

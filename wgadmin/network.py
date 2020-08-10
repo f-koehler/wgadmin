@@ -14,10 +14,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import annotations
-from typing import Dict, Set, List, Union
+
+import json
 from ipaddress import IPv4Address, IPv4Network, IPv6Address, IPv6Network
 from pathlib import Path
-import json
+from typing import Dict, List, Set, Union
+
 import yaml
 
 from wgadmin.peer import Peer

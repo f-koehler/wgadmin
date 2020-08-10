@@ -15,6 +15,7 @@
 
 import argparse
 from pathlib import Path
+
 import jinja2
 
 from wgadmin.network import Network

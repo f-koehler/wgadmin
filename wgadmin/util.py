@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import subprocess
 import json
-from typing import Tuple, Union, Any
+import subprocess
 from pathlib import Path
+from typing import Any, Tuple, Union
 
 
 def generate_public_key(private_key: str) -> str:

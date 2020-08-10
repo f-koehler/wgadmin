@@ -17,8 +17,8 @@ import argparse
 from pathlib import Path
 from typing import Union
 
-from wgadmin.peer import Peer
 from wgadmin.network import Network
+from wgadmin.peer import Peer
 
 
 def sanitize_port(value: Union[str, int]) -> int:

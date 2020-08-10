@@ -13,9 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import jinja2
 import argparse
 from pathlib import Path
+
+import jinja2
 
 from wgadmin.network import Network
 
