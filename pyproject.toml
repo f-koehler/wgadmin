@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wgadmin"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Fabian Köhler <fkoehler@physnet.uni-hamburg.de>"]
 maintainers = ["Fabian Köhler <fkoehler@physnet.uni-hamburg.de>"]
