@@ -3,6 +3,33 @@ name = "wgadmin"
 version = "0.1.0"
 description = ""
 authors = ["Fabian Köhler <fkoehler@physnet.uni-hamburg.de>"]
+maintainers = ["Fabian Köhler <fkoehler@physnet.uni-hamburg.de>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+homepage = "https://github.com/f-koehler/wgadmin"
+repository = "https://github.com/f-koehler/wgadmin"
+keywords = ["wireguard", "vpn", "network-manager"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Telecommunications Industry",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Communications",
+    "Topic :: Home Automation",
+    "Topic :: Internet",
+    "Topic :: Security",
+    "Topic :: System",
+    "Topic :: System :: Installation/Setup",
+    "Topic :: System :: Networking",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities"
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
