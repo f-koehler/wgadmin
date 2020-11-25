@@ -34,7 +34,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 jinja2 = "2.11.2"
-argcomplete = "1.12.1"
+argcomplete = "1.12.2"
 pyyaml = "5.3.1"
 
 [tool.poetry.dev-dependencies]
